@@ -1,17 +1,13 @@
 from sqlalchemy import Column, Integer, String
-from ..database import Base
+from database import Base
+from sqlalchemy.orm import relationship
 
 class User(Base):
-    # Название таблицы в базе данных
     __tablename__ = "users"
 
-    # Уникальный идентификатор пользователя
     id = Column(Integer, primary_key=True, index=True)
-    # Имя пользователя, должно быть уникальным
-    username = Column(String, nullable=False)
-    # Электронная почта, также уникальна
-    email = Column(String, unique=True, nullable=False)
-    # Хэш пароля пользователя
+    username = Column(String, nullable=False, index=True)
+    email = Column(String, unique=True, nullable=False, index=True)
     password = Column(String, nullable=False)
 
     boards = relationship("Board", back_populates="owner")

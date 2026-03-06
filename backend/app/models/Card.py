@@ -1,0 +1,14 @@
+from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from database import Base
+from sqlalchemy.orm import relationship
+
+class Card(Base):
+    __tablename__ = "cards"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False, index=True)
+    description = Column(String, nullable=True)
+    time_limit = Column(Date, nullable=True)
+
+    column_id = Column(Integer, ForeignKey("columns.id"))
+    column = relationship("Column", back_populates="cards")
