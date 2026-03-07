@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from database import Base
 from sqlalchemy.orm import relationship
 
-
 class Column(Base):
     __tablename__ = "columns"
 

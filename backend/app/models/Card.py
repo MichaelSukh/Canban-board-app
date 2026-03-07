@@ -9,6 +9,7 @@ class Card(Base):
     title = Column(String, nullable=False, index=True)
     description = Column(String, nullable=True)
     time_limit = Column(Date, nullable=True)
+    priority = Column(Integer, nullable=True)
 
     column_id = Column(Integer, ForeignKey("columns.id"))
     column = relationship("Column", back_populates="cards")
