@@ -1,9 +1,9 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    app_name: str = "Canban Board"
+    app_name: str = "Kanban Board"
     debug: bool = True
-    database_url: str = "sqlite:///database.db"
+    database_url: str = "sqlite:///./test.db"
     cors_origin: list = [
         "http://localhost:5173",
         "http://localhost:3000",

@@ -9,7 +9,7 @@ class Column(Base):
     title = Column(String, nullable=False, index=True)
     description = Column(String, nullable=True)
     
-    board_id = Column(Integer, ForeignKey("boards.id"))
+    board_id = Column(Integer, ForeignKey("boards.id"), nullable=False)
     board = relationship("Board", back_populates="columns")
 
     cards = relationship("Card", back_populates="column", cascade="all, delete-orphan") 

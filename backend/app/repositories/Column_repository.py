@@ -53,7 +53,7 @@ class ColumnRepository:
             self.db.rollback()
             raise
     
-    def delete_column(self, column_id: int) -> ColumnResponce | None:
+    def delete_column(self, column_id: int) -> ColumnResponse | None:
         db_column = self.db.query(Column).filter(Column.id == column_id).first()
 
         if not db_column:

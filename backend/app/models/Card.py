@@ -11,5 +11,5 @@ class Card(Base):
     time_limit = Column(Date, nullable=True)
     priority = Column(Integer, nullable=True)
 
-    column_id = Column(Integer, ForeignKey("columns.id"))
+    column_id = Column(Integer, ForeignKey("columns.id"), nullable=False)
     column = relationship("Column", back_populates="cards")
