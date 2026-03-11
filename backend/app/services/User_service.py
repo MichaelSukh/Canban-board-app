@@ -1,4 +1,4 @@
-from sqlalchemy import Session
+from sqlalchemy.orm import Session
 from repositories.User_repository import UserRepository
 from schemas.User import UserCreate, UserUpdate, UserResponse
 from fastapi import HTTPException, status

@@ -1,4 +1,4 @@
-from sqlalchemy import Session
+from sqlalchemy.orm import Session
 from models.User import User
 from schemas.User import UserCreate, UserUpdate, UserResponse
 

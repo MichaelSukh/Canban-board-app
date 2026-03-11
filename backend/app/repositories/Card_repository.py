@@ -1,12 +1,12 @@
-from sqlalchemy import Session
+from sqlalchemy.orm import Session
 from models.Card import Card
-from schemas.Card import CardCreate, CardUpdate, CardResponce, CardListResponse
+from schemas.Card import CardCreate, CardUpdate, CardResponse, CardListResponse
 
 class CardRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_card_by_id(self, card_id: int) -> CardResponce | None:
+    def get_card_by_id(self, card_id: int) -> CardResponse | None:
         db_card = self.db.query(Card).filter(Card.id == card_id).first()
 
         if not db_card:
@@ -22,14 +22,14 @@ class CardRepository:
         
         return CardListResponse(cards=db_cards, total_cards=len(db_cards))
     
-    def create_card(self, card: CardCreate) -> CardResponce:
+    def create_card(self, card: CardCreate) -> CardResponse:
         db_card = Card(**card.model_dump())
         self.db.add(db_card)
         self.db.commit()
         self.db.refresh(db_card)
         return db_card
     
-    def update_card(self, card_id: int, card_update: CardUpdate) -> CardResponce | None:
+    def update_card(self, card_id: int, card_update: CardUpdate) -> CardResponse | None:
         db_card = self.db.query(Card).filter(Card.id == card_id).first()
 
         if not db_card:
@@ -45,7 +45,7 @@ class CardRepository:
 
         return db_card
     
-    def delete_card(self, card_id: int) -> CardResponce | None:
+    def delete_card(self, card_id: int) -> CardResponse | None:
         db_card = self.db.query(Card).filter(Card.id == card_id).first()
 
         if not db_card:

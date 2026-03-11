@@ -1,12 +1,12 @@
-from sqlalchemy import Session
+from sqlalchemy.orm import Session
 from models.Board import Board
-from schemas.Board import BoardCreate, BoardUpdate, BoardResponce, BoardListResponse
+from schemas.Board import BoardCreate, BoardUpdate, BoardResponse, BoardListResponse
 
 class BoardRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_board_by_id(self, board_id: int) -> BoardResponce | None:
+    def get_board_by_id(self, board_id: int) -> BoardResponse | None:
         db_board = self.db.query(Board).filter(Board.id == board_id).first()
 
         if not db_board:
@@ -22,14 +22,14 @@ class BoardRepository:
         
         return BoardListResponse(boards=db_boards, total_boards=len(db_boards))
     
-    def create_board(self, board: BoardCreate) -> BoardResponce:
+    def create_board(self, board: BoardCreate) -> BoardResponse:
         db_board = Board(**board.model_dump())
         self.db.add(db_board)
         self.db.commit()
         self.db.refresh(db_board)
         return db_board
 
-    def update_board(self, board_id: int, board_update: BoardUpdate) -> BoardResponce | None:
+    def update_board(self, board_id: int, board_update: BoardUpdate) -> BoardResponse | None:
         db_board = self.db.query(Board).filter(Board.id == board_id).first()
 
         if not db_board:
@@ -45,7 +45,7 @@ class BoardRepository:
 
         return db_board
 
-    def delete_board(self, board_id: int) -> BoardResponce | None:
+    def delete_board(self, board_id: int) -> BoardResponse | None:
         db_board = self.db.query(Board).filter(Board.id == board_id).first()
 
         if not db_board:
