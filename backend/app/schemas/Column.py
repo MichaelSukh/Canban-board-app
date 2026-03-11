@@ -12,6 +12,7 @@ class ColumnCreate(ColumnBase):
     pass
 
 class ColumnUpdate(BaseModel):
+    id: int = Field(..., description="Column id")
     title: Optional[str] = Field(None, min_length=4, max_length=30, description="Column title")
     description: Optional[str] = Field(None, description="Column description")
     cards: Optional[list[CardResponce]] = Field(None, description="Column cards")

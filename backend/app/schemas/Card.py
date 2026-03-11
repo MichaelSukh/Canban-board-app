@@ -12,6 +12,7 @@ class CardCreate(CardBase):
     pass
 
 class CardUpdate(BaseModel):
+    id: int = Field(..., description="Card id")
     title: Optional[str] = Field(None, min_length=4, max_length=30, description="Card title")
     description: Optional[str] = Field(None, description="Card description")
     time_limit: Optional[str] = Field(None, description="Card time limit")
