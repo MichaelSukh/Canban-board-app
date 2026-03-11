@@ -11,7 +11,7 @@ class UserService:
         db_user = self.user_repository.get_user_by_email(email)
         if not db_user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-        return db_user
+        return UserResponse.model_validate(db_user)
     
     def create_user(self, user: UserCreate) -> UserResponse:
         return self.user_repository.create_user(user)

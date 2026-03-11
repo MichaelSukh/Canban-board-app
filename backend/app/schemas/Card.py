@@ -22,12 +22,12 @@ class CardUpdate(BaseModel):
 class CardDelete(BaseModel):
     id: int = Field(..., description="Card id")
 
-class CardResponce(CardBase):
+class CardResponse(CardBase):
     id: int = Field(..., description="Card id")
 
     class Config:
         from_attributes = True
 
 class CardListResponse(BaseModel):
-    cards: list[CardResponce]
+    cards: list[CardResponse]
     total_cards: int = Field(..., description="Total number of cards")
