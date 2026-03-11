@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from repositories.User_repository import UserRepository
 from schemas.User import UserCreate, UserUpdate, UserResponse
+from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
 class UserService:
@@ -14,10 +15,20 @@ class UserService:
         return UserResponse.model_validate(db_user)
     
     def create_user(self, user: UserCreate) -> UserResponse:
-        return self.user_repository.create_user(user)
+        try:
+            new_user = self.user_repository.create_user(user)
+            return UserResponse.model_validate(new_user)
+        except IntegrityError:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User with this email already exists")
     
-    def update_user(self, user_id: int, user_update: UserUpdate) -> UserResponse | None:
-        return self.user_repository.update_user(user_id, user_update)
+    def update_user(self, user_id: int, user_update: UserUpdate) -> UserResponse:
+        updated_user = self.user_repository.update_user(user_id, user_update)
+        if not updated_user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        return UserResponse.model_validate(updated_user)
     
-    def delete_user(self, user_id: int) -> UserResponse | None:
-        return self.user_repository.delete_user(user_id)    
+    def delete_user(self, user_id: int) -> UserResponse:
+        deleted_user = self.user_repository.delete_user(user_id)
+        if not deleted_user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        return UserResponse.model_validate(deleted_user)    

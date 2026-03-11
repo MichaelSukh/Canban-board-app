@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from models.User import User
 from schemas.User import UserCreate, UserUpdate, UserResponse
 
@@ -15,11 +16,15 @@ class UserRepository:
         return db_user
     
     def create_user(self, user: UserCreate) -> UserResponse:
-        db_user = User(**user.model_dump())
-        self.db.add(db_user)
-        self.db.commit()
-        self.db.refresh(db_user)
-        return db_user
+        try:
+            db_user = User(**user.model_dump())
+            self.db.add(db_user)
+            self.db.commit()
+            self.db.refresh(db_user)
+            return db_user
+        except IntegrityError:
+            self.db.rollback()
+            raise
 
     def update_user(self, user_id: int, user_update: UserUpdate) -> UserResponse | None:
         db_user = self.db.query(User).filter(User.id == user_id).first()
@@ -32,10 +37,13 @@ class UserRepository:
         for key, value in update_data.items():
             setattr(db_user, key, value)
 
-        self.db.commit()
-        self.db.refresh(db_user)
-
-        return db_user
+        try:
+            self.db.commit()
+            self.db.refresh(db_user)
+            return db_user
+        except IntegrityError:
+            self.db.rollback()
+            raise
 
     def delete_user(self, user_id: int) -> UserResponse | None:
         db_user = self.db.query(User).filter(User.id == user_id).first()

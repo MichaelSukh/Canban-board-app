@@ -12,4 +12,4 @@ class Board(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="boards")
 
-    columns = relationship("Column", back_populates="board")
+    columns = relationship("Column", back_populates="board", cascade="all, delete-orphan")

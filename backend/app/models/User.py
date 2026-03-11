@@ -11,5 +11,5 @@ class User(Base):
     user_icon = Column(String, nullable=True)
     password = Column(String, nullable=False)
 
-    boards = relationship("Board", back_populates="owner")
+    boards = relationship("Board", back_populates="owner", cascade="all, delete-orphan")
 
