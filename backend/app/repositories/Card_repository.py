@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from models.Card import Card
 from schemas.Card import CardCreate, CardUpdate, CardResponse, CardListResponse
 
@@ -23,11 +24,15 @@ class CardRepository:
         return CardListResponse(cards=db_cards, total_cards=len(db_cards))
     
     def create_card(self, card: CardCreate) -> CardResponse:
-        db_card = Card(**card.model_dump())
-        self.db.add(db_card)
-        self.db.commit()
-        self.db.refresh(db_card)
-        return db_card
+        try:
+            db_card = Card(**card.model_dump())
+            self.db.add(db_card)
+            self.db.commit()
+            self.db.refresh(db_card)
+            return db_card
+        except IntegrityError:
+            self.db.rollback()
+            raise
     
     def update_card(self, card_id: int, card_update: CardUpdate) -> CardResponse | None:
         db_card = self.db.query(Card).filter(Card.id == card_id).first()
@@ -40,10 +45,13 @@ class CardRepository:
         for key, value in update_data.items():
             setattr(db_card, key, value)
 
-        self.db.commit()
-        self.db.refresh(db_card)
-
-        return db_card
+        try:
+            self.db.commit()
+            self.db.refresh(db_card)
+            return db_card
+        except IntegrityError:
+            self.db.rollback()
+            raise
     
     def delete_card(self, card_id: int) -> CardResponse | None:
         db_card = self.db.query(Card).filter(Card.id == card_id).first()

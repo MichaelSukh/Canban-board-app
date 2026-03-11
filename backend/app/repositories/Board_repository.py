@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from models.Board import Board
 from schemas.Board import BoardCreate, BoardUpdate, BoardResponse, BoardListResponse
 
@@ -23,11 +24,15 @@ class BoardRepository:
         return BoardListResponse(boards=db_boards, total_boards=len(db_boards))
     
     def create_board(self, board: BoardCreate) -> BoardResponse:
-        db_board = Board(**board.model_dump())
-        self.db.add(db_board)
-        self.db.commit()
-        self.db.refresh(db_board)
-        return db_board
+        try:
+            db_board = Board(**board.model_dump())
+            self.db.add(db_board)
+            self.db.commit()
+            self.db.refresh(db_board)
+            return db_board
+        except IntegrityError:
+            self.db.rollback()
+            raise
 
     def update_board(self, board_id: int, board_update: BoardUpdate) -> BoardResponse | None:
         db_board = self.db.query(Board).filter(Board.id == board_id).first()
@@ -40,10 +45,13 @@ class BoardRepository:
         for key, value in update_data.items():
             setattr(db_board, key, value)
 
-        self.db.commit()
-        self.db.refresh(db_board)
-
-        return db_board
+        try:
+            self.db.commit()
+            self.db.refresh(db_board)
+            return db_board
+        except IntegrityError:
+            self.db.rollback()
+            raise
 
     def delete_board(self, board_id: int) -> BoardResponse | None:
         db_board = self.db.query(Board).filter(Board.id == board_id).first()

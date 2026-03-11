@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from models.Column import Column
+from sqlalchemy.exc import IntegrityError
 from schemas.Column import ColumnCreate, ColumnUpdate, ColumnResponse, ColumnListResponse
 
 class ColumnRepository:
@@ -23,11 +24,15 @@ class ColumnRepository:
         return ColumnListResponse(columns=db_columns, total_columns=len(db_columns))
     
     def create_column(self, column: ColumnCreate) -> ColumnResponse:
-        db_column = Column(**column.model_dump())
-        self.db.add(db_column)
-        self.db.commit()
-        self.db.refresh(db_column)
-        return db_column
+        try:
+            db_column = Column(**column.model_dump())
+            self.db.add(db_column)
+            self.db.commit()
+            self.db.refresh(db_column)
+            return db_column
+        except IntegrityError:
+            self.db.rollback()
+            raise
     
     def update_column(self, column_id: int, column_update: ColumnUpdate) -> ColumnResponse | None:
         db_column = self.db.query(Column).filter(Column.id == column_id).first()
@@ -40,10 +45,13 @@ class ColumnRepository:
         for key, value in update_data.items():
             setattr(db_column, key, value)
 
-        self.db.commit()
-        self.db.refresh(db_column)
-
-        return db_column
+        try:
+            self.db.commit()
+            self.db.refresh(db_column)
+            return db_column
+        except IntegrityError:
+            self.db.rollback()
+            raise
     
     def delete_column(self, column_id: int) -> ColumnResponce | None:
         db_column = self.db.query(Column).filter(Column.id == column_id).first()
