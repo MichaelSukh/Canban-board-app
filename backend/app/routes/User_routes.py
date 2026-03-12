@@ -5,7 +5,7 @@ from app.schemas.User import UserCreate, UserUpdate, UserResponse
 from app.services.User_service import UserService
 
 router = APIRouter(
-    prefix="/api/users",
+    prefix="/users",
     tags=["Users"]
 )
 
@@ -24,7 +24,8 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user_service = UserService(db)
     return user_service.create_user(user)
 
-@router.post("/update", response_model=UserResponse, status_code=status.HTTP_200_OK)
+@router.put("/update", response_model=UserResponse, status_code=status.HTTP_200_OK)
 def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_db)):
     user_service = UserService(db)
     return user_service.update_user(user_id, user_update)
+

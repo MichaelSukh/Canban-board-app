@@ -7,7 +7,6 @@ class CardBase(BaseModel):
     description: Optional[str] = Field(None, description="Card description")
     time_limit: Optional[date] = Field(None, description="Card time limit")
     priority: Optional[int] = Field(None, description="Card priority")
-    column_id: int = Field(..., description="Card column id")
 
 class CardCreate(CardBase):
     pass
@@ -25,6 +24,7 @@ class CardDelete(BaseModel):
 
 class CardResponse(CardBase):
     id: int = Field(..., description="Card id")
+    column_id: int = Field(..., description="Card column id")
 
     class Config:
         from_attributes = True

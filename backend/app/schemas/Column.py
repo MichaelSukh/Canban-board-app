@@ -4,7 +4,6 @@ from typing import Optional
 class ColumnBase(BaseModel):
     title: str = Field(..., min_length=4, max_length=30, description="Column title")
     description: Optional[str] = Field(None, description="Column description")
-    board_id: int = Field(..., description="Column board id")
 
 class ColumnCreate(ColumnBase):
     pass
@@ -19,6 +18,7 @@ class ColumnDelete(BaseModel):
 
 class ColumnResponse(ColumnBase):
     id: int = Field(..., description="Column id")
+    board_id: int = Field(..., description="Column board id")
 
     class Config:
         from_attributes = True
