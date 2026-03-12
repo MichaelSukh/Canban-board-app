@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from models.Board import Board
-from schemas.Board import BoardCreate, BoardUpdate, BoardResponse, BoardListResponse
+from app.models.Board import Board
+from app.schemas.Board import BoardCreate, BoardUpdate, BoardResponse, BoardListResponse
 
 class BoardRepository:
     def __init__(self, db: Session):

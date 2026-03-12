@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from models.Column import Column
+from app.models.Column import Column
 from sqlalchemy.exc import IntegrityError
-from schemas.Column import ColumnCreate, ColumnUpdate, ColumnResponse, ColumnListResponse
+from app.schemas.Column import ColumnCreate, ColumnUpdate, ColumnResponse, ColumnListResponse
 
 class ColumnRepository:
     def __init__(self, db: Session):

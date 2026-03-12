@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from repositories.Card_repository import CardRepository
-from schemas.Card import CardCreate, CardUpdate, CardResponse, CardListResponse
+from app.repositories.Card_repository import CardRepository
+from app.schemas.Card import CardCreate, CardUpdate, CardResponse, CardListResponse
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 

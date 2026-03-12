@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from repositories.Board_repository import BoardRepository
-from schemas.Board import BoardCreate, BoardUpdate, BoardResponse, BoardListResponse
+from app.repositories.Board_repository import BoardRepository
+from app.schemas.Board import BoardCreate, BoardUpdate, BoardResponse, BoardListResponse
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 

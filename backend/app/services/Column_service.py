@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from repositories.Column_repository import ColumnRepository
-from schemas.Column import ColumnCreate, ColumnUpdate, ColumnResponse, ColumnListResponse
+from app.repositories.Column_repository import ColumnRepository
+from app.schemas.Column import ColumnCreate, ColumnUpdate, ColumnResponse, ColumnListResponse
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 

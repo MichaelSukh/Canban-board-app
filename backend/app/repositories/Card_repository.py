@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from models.Card import Card
-from schemas.Card import CardCreate, CardUpdate, CardResponse, CardListResponse
+from app.models.Card import Card
+from app.schemas.Card import CardCreate, CardUpdate, CardResponse, CardListResponse
 
 class CardRepository:
     def __init__(self, db: Session):
