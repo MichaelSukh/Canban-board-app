@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field
 from typing import Optional
+from datetime import date
 
 class CardBase(BaseModel):
     title: str = Field(..., min_length=4, max_length=30, description="Card title")
     description: Optional[str] = Field(None, description="Card description")
-    time_limit: Optional[str] = Field(None, description="Card time limit")
+    time_limit: Optional[date] = Field(None, description="Card time limit")
     priority: Optional[int] = Field(None, description="Card priority")
     column_id: int = Field(..., description="Card column id")
 
@@ -15,7 +16,7 @@ class CardUpdate(BaseModel):
     id: int = Field(..., description="Card id")
     title: Optional[str] = Field(None, min_length=4, max_length=30, description="Card title")
     description: Optional[str] = Field(None, description="Card description")
-    time_limit: Optional[str] = Field(None, description="Card time limit")
+    time_limit: Optional[date] = Field(None, description="Card time limit")
     priority: Optional[int] = Field(None, description="Card priority")
     column_id: Optional[int] = Field(None, description="Card column id")
 

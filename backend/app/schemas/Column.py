@@ -1,11 +1,9 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from .Card import CardResponse
 
 class ColumnBase(BaseModel):
     title: str = Field(..., min_length=4, max_length=30, description="Column title")
     description: Optional[str] = Field(None, description="Column description")
-    cards: Optional[list[CardResponse]] = Field(None, description="Column cards")
     board_id: int = Field(..., description="Column board id")
 
 class ColumnCreate(ColumnBase):
@@ -15,7 +13,6 @@ class ColumnUpdate(BaseModel):
     id: int = Field(..., description="Column id")
     title: Optional[str] = Field(None, min_length=4, max_length=30, description="Column title")
     description: Optional[str] = Field(None, description="Column description")
-    cards: Optional[list[CardResponse]] = Field(None, description="Column cards")
 
 class ColumnDelete(BaseModel):
     id: int = Field(..., description="Column id")
