@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
-from database import Base
+from app.database import Base
 from sqlalchemy.orm import relationship
 
 class Card(Base):

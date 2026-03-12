@@ -75,7 +75,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-shop.db
+test.db
 
 *.tsbuildinfo
 .vscode

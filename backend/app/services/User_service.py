@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from repositories.User_repository import UserRepository
-from schemas.User import UserCreate, UserUpdate, UserResponse
+from app.repositories.User_repository import UserRepository
+from app.schemas.User import UserCreate, UserUpdate, UserResponse
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
