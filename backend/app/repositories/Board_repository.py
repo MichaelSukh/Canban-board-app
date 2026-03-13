@@ -23,9 +23,9 @@ class BoardRepository:
         
         return BoardListResponse(boards=db_boards, total_boards=len(db_boards))
     
-    def create_board(self, board: BoardCreate) -> BoardResponse:
+    def create_board(self, user_id: int, board: BoardCreate) -> BoardResponse:
         try:
-            db_board = Board(**board.model_dump())
+            db_board = Board(**board.model_dump(), owner_id=user_id)
             self.db.add(db_board)
             self.db.commit()
             self.db.refresh(db_board)

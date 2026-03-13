@@ -23,9 +23,9 @@ class CardRepository:
         
         return CardListResponse(cards=db_cards, total_cards=len(db_cards))
     
-    def create_card(self, card: CardCreate) -> CardResponse:
+    def create_card(self, column_id: int, card: CardCreate) -> CardResponse:
         try:
-            db_card = Card(**card.model_dump())
+            db_card = Card(**card.model_dump(), column_id=column_id)
             self.db.add(db_card)
             self.db.commit()
             self.db.refresh(db_card)

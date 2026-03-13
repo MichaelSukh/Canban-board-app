@@ -9,12 +9,8 @@ class BoardCreate(BoardBase):
     pass
 
 class BoardUpdate(BaseModel):
-    id: int = Field(..., description="Board id")
     title: Optional[str] = Field(None, min_length=4, max_length=30, description="Board title")
     description: Optional[str] = Field(None, description="Board description")
-
-class BoardDelete(BaseModel):
-    id: int = Field(..., description="Board id")
 
 class BoardResponse(BoardBase):
     id: int = Field(..., description="Board id")

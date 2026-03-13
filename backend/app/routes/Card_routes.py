@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.Card import CardCreate, CardUpdate, CardResponse, CardListResponse
 from app.services.Card_service import CardService
+from app.core.security import get_current_user
+from app.models.User import User
 
 router = APIRouter(
     prefix="/cards",
@@ -10,23 +12,23 @@ router = APIRouter(
 )
 
 @router.get("/{column_id}", response_model=CardListResponse, status_code=status.HTTP_200_OK)
-def get_cards_by_column_id(column_id: int, db: Session = Depends(get_db)):
+def get_cards_by_column_id(column_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     card_sevice = CardService(db)
-    return card_sevice.get_cards_by_column_id(column_id)
+    return card_sevice.get_cards_by_column_id(column_id, current_user.id)
 
-@router.post("/create", response_model=CardResponse, status_code=status.HTTP_201_CREATED)
-def create_card(card: CardCreate, db: Session = Depends(get_db)):
+@router.post("/create/{column_id}", response_model=CardResponse, status_code=status.HTTP_201_CREATED)
+def create_card(column_id: int, card: CardCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     card_sevice = CardService(db)
-    return card_sevice.create_card(card)
+    return card_sevice.create_card(column_id, current_user.id, card)
 
 @router.put("/update/{card_id}", response_model=CardResponse, status_code=status.HTTP_200_OK)
-def update_card(card_id: int, card_update: CardUpdate, db: Session = Depends(get_db)):
+def update_card(card_id: int, card_update: CardUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     card_sevice = CardService(db)
-    return card_sevice.update_card(card_id, card_update)
+    return card_sevice.update_card(card_id, current_user.id, card_update)
 
 @router.delete("/delete/{card_id}", response_model=CardResponse, status_code=status.HTTP_200_OK)
-def delete_card(card_id: int, db: Session = Depends(get_db)):
+def delete_card(card_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     card_sevice = CardService(db)
-    return card_sevice.delete_card(card_id)
+    return card_sevice.delete_card(card_id, current_user.id)
 
 

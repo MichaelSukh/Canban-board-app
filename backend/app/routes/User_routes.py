@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.User import UserCreate, UserUpdate, UserResponse
 from app.services.User_service import UserService
-from app.core.security import create_access_token
+from app.core.security import create_access_token, get_current_user
+from app.models.User import User
 
 router = APIRouter(
     prefix="/users",
@@ -30,8 +31,8 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user_service = UserService(db)
     return user_service.create_user(user)
 
-@router.put("/update/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
-def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_db)):
+@router.put("/update", response_model=UserResponse, status_code=status.HTTP_200_OK)
+def update_user(user_update: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     user_service = UserService(db)
-    return user_service.update_user(user_id, user_update)
+    return user_service.update_user(current_user.id, user_update)
 

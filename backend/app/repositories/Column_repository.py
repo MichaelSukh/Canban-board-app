@@ -23,9 +23,9 @@ class ColumnRepository:
         
         return ColumnListResponse(columns=db_columns, total_columns=len(db_columns))
     
-    def create_column(self, column: ColumnCreate) -> ColumnResponse:
+    def create_column(self, board_id: int, column: ColumnCreate) -> ColumnResponse:
         try:
-            db_column = Column(**column.model_dump())
+            db_column = Column(**column.model_dump(), board_id=board_id)
             self.db.add(db_column)
             self.db.commit()
             self.db.refresh(db_column)

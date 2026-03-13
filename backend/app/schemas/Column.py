@@ -9,12 +9,9 @@ class ColumnCreate(ColumnBase):
     pass
 
 class ColumnUpdate(BaseModel):
-    id: int = Field(..., description="Column id")
     title: Optional[str] = Field(None, min_length=4, max_length=30, description="Column title")
     description: Optional[str] = Field(None, description="Column description")
 
-class ColumnDelete(BaseModel):
-    id: int = Field(..., description="Column id")
 
 class ColumnResponse(ColumnBase):
     id: int = Field(..., description="Column id")
