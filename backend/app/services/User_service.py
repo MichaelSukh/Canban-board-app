@@ -3,11 +3,22 @@ from app.repositories.User_repository import UserRepository
 from app.schemas.User import UserCreate, UserUpdate, UserResponse
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, verify_password
 
 class UserService:
     def __init__(self, db: Session):
         self.user_repository = UserRepository(db)
+
+    def authenticate_user(self, email: str, plain_password: str) -> UserResponse:
+        db_user = self.user_repository.get_user_by_email(email)
+
+        if not db_user or not verify_password(plain_password, db_user.password):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password",
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+        return UserResponse.model_validate(db_user)
 
     def get_user_by_email(self, email: str) -> UserResponse:
         db_user = self.user_repository.get_user_by_email(email)
