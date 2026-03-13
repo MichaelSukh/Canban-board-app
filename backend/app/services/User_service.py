@@ -3,6 +3,7 @@ from app.repositories.User_repository import UserRepository
 from app.schemas.User import UserCreate, UserUpdate, UserResponse
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
+from app.core.security import get_password_hash
 
 class UserService:
     def __init__(self, db: Session):
@@ -16,7 +17,9 @@ class UserService:
     
     def create_user(self, user: UserCreate) -> UserResponse:
         try:
-            new_user = self.user_repository.create_user(user)
+            user_data = user.model_dump()
+            user_data["password"] = get_password_hash(user_data["password"])
+            new_user = self.user_repository.create_user(user_data)
             return UserResponse.model_validate(new_user)
         except IntegrityError:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User with this email already exists")

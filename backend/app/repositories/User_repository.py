@@ -15,9 +15,9 @@ class UserRepository:
         
         return db_user
     
-    def create_user(self, user: UserCreate) -> UserResponse:
+    def create_user(self, user: dict) -> UserResponse:
         try:
-            db_user = User(**user.model_dump())
+            db_user = User(**user)
             self.db.add(db_user)
             self.db.commit()
             self.db.refresh(db_user)

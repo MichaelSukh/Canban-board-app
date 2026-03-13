@@ -9,11 +9,6 @@ router = APIRouter(
     tags=["Users"]
 )
 
-@router.get("/id/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
-def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
-    user_service = UserService(db)
-    return user_service.get_user_by_id(user_id)
-
 @router.get("/email/{user_email}", response_model=UserResponse, status_code=status.HTTP_200_OK)
 def get_user_by_email(user_email: str, db: Session = Depends(get_db)):
     user_service = UserService(db)
@@ -24,7 +19,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user_service = UserService(db)
     return user_service.create_user(user)
 
-@router.put("/update", response_model=UserResponse, status_code=status.HTTP_200_OK)
+@router.put("/update/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
 def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_db)):
     user_service = UserService(db)
     return user_service.update_user(user_id, user_update)
