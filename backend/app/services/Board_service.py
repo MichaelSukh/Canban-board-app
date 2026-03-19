@@ -11,14 +11,17 @@ class BoardService:
 
     def get_boards_by_user_id(self, user_id: int) -> BoardListResponse:
         db_boards = self.board_repository.get_boards_by_user_id(user_id)
-        if not db_boards:
+        
+        boards_list = [BoardResponse.model_validate(board) for board in db_boards]
+        
+        if not boards_list:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Boards not found")
-        return BoardListResponse.model_validate(db_boards)
+        return BoardListResponse(boards=boards_list, total_boards=len(boards_list))
     
 
     def create_board(self, user_id: int, board: BoardCreate) -> BoardResponse:
         try:
-            new_board = self.board_repository.create_board(user_id, board)
+            new_board = self.board_repository.create_board(user_id, board.model_dump())
             return BoardResponse.model_validate(new_board)
         except IntegrityError:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Board with this name already exists")
@@ -34,7 +37,7 @@ class BoardService:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to update this board")
 
         try:
-            updated_board = self.board_repository.update_board(board_id, board_update)
+            updated_board = self.board_repository.update_board(board_id, board_update.model_dump(exclude_unset=True))
             return BoardResponse.model_validate(updated_board)
         except IntegrityError:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Board with this name already exists")

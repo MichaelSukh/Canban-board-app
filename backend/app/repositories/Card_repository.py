@@ -1,13 +1,12 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from app.models.Card import Card
-from app.schemas.Card import CardCreate, CardUpdate, CardResponse, CardListResponse
 
 class CardRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_card_by_id(self, card_id: int) -> CardResponse | None:
+    def get_card_by_id(self, card_id: int) -> Card | None:
         db_card = self.db.query(Card).filter(Card.id == card_id).first()
 
         if not db_card:
@@ -15,17 +14,17 @@ class CardRepository:
         
         return db_card
     
-    def get_cards_by_column_id(self, column_id: int) -> CardListResponse | None:
+    def get_cards_by_column_id(self, column_id: int) -> list[Card] | None:
         db_cards = self.db.query(Card).filter(Card.column_id == column_id).all()
 
         if not db_cards:
             return None
         
-        return CardListResponse(cards=db_cards, total_cards=len(db_cards))
+        return db_cards
     
-    def create_card(self, column_id: int, card: CardCreate) -> CardResponse:
+    def create_card(self, column_id: int, card: dict) -> Card:
         try:
-            db_card = Card(**card.model_dump(), column_id=column_id)
+            db_card = Card(**card, column_id=column_id)
             self.db.add(db_card)
             self.db.commit()
             self.db.refresh(db_card)
@@ -34,15 +33,13 @@ class CardRepository:
             self.db.rollback()
             raise
     
-    def update_card(self, card_id: int, card_update: CardUpdate) -> CardResponse | None:
+    def update_card(self, card_id: int, card_update: dict) -> Card | None:
         db_card = self.db.query(Card).filter(Card.id == card_id).first()
 
         if not db_card:
             return None
         
-        update_data = card_update.model_dump(exclude_unset=True)
-
-        for key, value in update_data.items():
+        for key, value in card_update.items():
             setattr(db_card, key, value)
 
         try:
@@ -53,7 +50,7 @@ class CardRepository:
             self.db.rollback()
             raise
     
-    def delete_card(self, card_id: int) -> CardResponse | None:
+    def delete_card(self, card_id: int) -> Card | None:
         db_card = self.db.query(Card).filter(Card.id == card_id).first()
 
         if not db_card:

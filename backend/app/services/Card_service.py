@@ -19,9 +19,11 @@ class CardService:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to get cards from this column")
         
         db_cards = self.card_repository.get_cards_by_column_id(column_id)
-        if not db_cards:
+
+        cards_list = [CardResponse.model_validate(card) for card in db_cards]
+        if not cards_list:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cards not found")
-        return CardListResponse.model_validate(db_cards)
+        return CardListResponse(cards=cards_list, total_cards=len(cards_list))
     
     def create_card(self, column_id: int, user_id: int, card: CardCreate) -> CardResponse:
         db_column = self.column_repository.get_column_by_id(column_id)
@@ -32,7 +34,7 @@ class CardService:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to create a card in this column")
         
         try:
-            new_card = self.card_repository.create_card(column_id, card)
+            new_card = self.card_repository.create_card(column_id, card.model_dump())
             return CardResponse.model_validate(new_card)
         except IntegrityError:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Card with this name already exists")
@@ -46,7 +48,7 @@ class CardService:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to update this card")
         
         try:
-            updated_card = self.card_repository.update_card(card_id, card_update)
+            updated_card = self.card_repository.update_card(card_id, card_update.model_dump(exclude_unset=True))
             if not updated_card:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Card not found")
             return CardResponse.model_validate(updated_card)

@@ -1,13 +1,12 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from app.models.User import User
-from app.schemas.User import UserCreate, UserUpdate, UserResponse
 
 class UserRepository:
     def __init__(self, db: Session):
         self.db = db
         
-    def get_user_by_email(self, email: str) -> UserResponse | None:
+    def get_user_by_email(self, email: str) -> User | None:
         db_user = self.db.query(User).filter(User.email == email).first()
 
         if not db_user:
@@ -15,7 +14,7 @@ class UserRepository:
         
         return db_user
     
-    def create_user(self, user: dict) -> UserResponse:
+    def create_user(self, user: dict) -> User:
         try:
             db_user = User(**user)
             self.db.add(db_user)
@@ -26,15 +25,13 @@ class UserRepository:
             self.db.rollback()
             raise
 
-    def update_user(self, user_id: int, user_update: UserUpdate) -> UserResponse | None:
+    def update_user(self, user_id: int, user_update: dict) -> User | None:
         db_user = self.db.query(User).filter(User.id == user_id).first()
 
         if not db_user:
             return None
-        
-        update_data = user_update.model_dump(exclude_unset=True)
 
-        for key, value in update_data.items():
+        for key, value in user_update.items():
             setattr(db_user, key, value)
 
         try:
@@ -45,7 +42,7 @@ class UserRepository:
             self.db.rollback()
             raise
 
-    def delete_user(self, user_id: int) -> UserResponse | None:
+    def delete_user(self, user_id: int) -> User | None:
         db_user = self.db.query(User).filter(User.id == user_id).first()
 
         if not db_user:

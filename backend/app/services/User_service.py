@@ -37,7 +37,10 @@ class UserService:
     
     def update_user(self, user_id: int, user_update: UserUpdate) -> UserResponse:
         try:
-            updated_user = self.user_repository.update_user(user_id, user_update)
+            update_data = user_update.model_dump(exclude_unset=True)
+            if "password" in update_data:
+                update_data["password"] = get_password_hash(update_data["password"])
+            updated_user = self.user_repository.update_user(user_id, update_data)
             if not updated_user:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
             return UserResponse.model_validate(updated_user)
