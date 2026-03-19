@@ -12,10 +12,10 @@ class BoardService:
     def get_boards_by_user_id(self, user_id: int) -> BoardListResponse:
         db_boards = self.board_repository.get_boards_by_user_id(user_id)
         
-        boards_list = [BoardResponse.model_validate(board) for board in db_boards]
-        
-        if not boards_list:
+        if not db_boards:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Boards not found")
+        
+        boards_list = [BoardResponse.model_validate(board) for board in db_boards]
         return BoardListResponse(boards=boards_list, total_boards=len(boards_list))
     
 

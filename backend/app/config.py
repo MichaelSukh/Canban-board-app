@@ -1,4 +1,3 @@
-from passlib.utils import int_to_bytes
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -11,7 +10,7 @@ class Settings(BaseSettings):
 
     secret_key: str
     algorithm: str
-    access_token_expires_in: int_to_bytes
+    access_token_expires_in: int
 
     cors_origin: list = [
         "http://localhost:5173",
