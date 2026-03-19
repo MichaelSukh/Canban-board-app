@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from app.config import settings
 from app.routes import User_routes, Board_routes, Column_routes, Card_routes
 from app.database import init_db
@@ -17,6 +19,30 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+
+    errors = exc.errors()
+    formatted_errors = []
+    for error in errors:
+        field = str(error["loc"][-1]) if len(error["loc"]) > 0 else "unknown"
+        message = error["msg"]
+
+        formatted_errors.append({
+            "field": field,
+            "message": message
+        })
+    
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "error": "Validation error",
+            "message": "Переданы некорректные данные",
+            "details": formatted_errors
+        }
+    )
+
 
 app.include_router(User_routes.router)
 app.include_router(Board_routes.router)
