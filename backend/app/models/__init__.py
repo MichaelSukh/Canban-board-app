@@ -7,11 +7,13 @@ from app.models.User import User
 from app.models.Board import Board
 from app.models.Column import Column
 from app.models.Card import Card
+from app.models.CardImage import CardImage
 
 __all__ = [
     "Base",
     "User",
     "Board",
     "Column",
-    "Card"
+    "Card",
+    "CardImage"
 ]

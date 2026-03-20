@@ -13,3 +13,5 @@ class Card(Base):
 
     column_id = Column(Integer, ForeignKey("columns.id"), nullable=False)
     column = relationship("Column", back_populates="cards")
+
+    images = relationship("CardImage", back_populates="card", cascade="all, delete-orphan")

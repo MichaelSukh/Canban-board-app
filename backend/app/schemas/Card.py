@@ -18,6 +18,13 @@ class CardUpdate(BaseModel):
     priority: Optional[int] = Field(None, description="Card priority")
     column_id: Optional[int] = Field(None, description="Card column id")
 
+class CardImageResponce(BaseModel):
+    id: int = Field(..., description="Card image id")
+    image_url: str = Field(..., description="Card image url")
+
+    class Config:
+        from_attributes = True
+
 class CardResponse(CardBase):
     id: int = Field(..., description="Card id")
     column_id: int = Field(..., description="Card column id")

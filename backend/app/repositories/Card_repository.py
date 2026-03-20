@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from app.models.Card import Card
+from app.models.CardImage import CardImage
+import os
 
 class CardRepository:
     def __init__(self, db: Session):
@@ -59,3 +61,36 @@ class CardRepository:
         self.db.delete(db_card)
         self.db.commit()
         return db_card
+
+    def create_card_image(self, card_id: int, image_url: str) -> CardImage:
+        try:
+            db_card_image = CardImage(card_id=card_id, image_url=image_url)
+            self.db.add(db_card_image)
+            self.db.commit()
+            self.db.refresh(db_card_image)
+            return db_card_image
+        except IntegrityError:
+            self.db.rollback()
+            raise
+    
+    def delete_card_image(self, card_image_id: int) -> CardImage | None:
+        db_card_image = self.db.query(CardImage).filter(CardImage.id == card_image_id).first()
+
+        if not db_card_image:
+            return None
+        
+        file_path = db_card_image.image_url.lstrip("/")
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        self.db.delete(db_card_image)
+        self.db.commit()
+        return db_card_image
+
+    def get_card_image_by_id(self, card_image_id: int) -> CardImage | None:
+        db_card_image = self.db.query(CardImage).filter(CardImage.id == card_image_id).first()
+        return db_card_image
+
+    def get_card_images_by_card_id(self, card_id: int) -> list[CardImage] | None:
+        db_card_images = self.db.query(CardImage).filter(CardImage.card_id == card_id).all()
+        return db_card_images
