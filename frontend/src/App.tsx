@@ -1,29 +1,19 @@
-import { Input } from "./components/ui/Input";
-import { SelectButton } from "./components/ui/SelectButton";
-import { AddButton } from "./components/ui/AddButton";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { LoginPage } from "./pages/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center gap-10">
-      <Input
-        label="EMAIL"
-        placeholder="Enter your name"
-      />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-      <Input
-        label="PASSWORD"
-        placeholder="Enter your password"
-        error="Error message"
-      />
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
-      <SelectButton>Select</SelectButton>
-
-      <SelectButton isLoading>Select</SelectButton>
-
-      <AddButton>Add</AddButton>
-
-      <AddButton isLoading>Add</AddButton>
-    </div>
+        <Route path="*" element={<div className="flex items-center justify-center text-5xl font-mono">404 Not Found</div>} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
