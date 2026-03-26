@@ -18,7 +18,7 @@ export const SelectButton = ({
             disabled={isLoading || disabled}
             className={`
                 w-full px-4 py-2 max-w-sm
-                bg-black text-white
+                bg-[#2d2d2d] text-white
                 transition-all duration-400 
                 hover:bg-gray-900 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.7)]
                 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.7)]
