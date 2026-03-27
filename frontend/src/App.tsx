@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { TestPage } from "./pages/TestPage";
+import { BoardsPage } from "./pages/BoardsPage";
 
 function App() {
   return (
@@ -9,10 +10,11 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/test" element={<TestPage />} />
+        <Route path="/boards" element={<BoardsPage />} />
 
         <Route path="/" element={<Navigate to="/login" replace />} />
 
+        <Route path="/test" element={<TestPage />} />
         <Route path="*" element={<div className="flex items-center justify-center text-5xl font-mono">404 Not Found</div>} />
       </Routes>
     </BrowserRouter>

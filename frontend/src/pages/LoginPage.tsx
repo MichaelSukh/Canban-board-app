@@ -29,7 +29,7 @@ export const LoginPage = () => {
             const result = await login(formData).unwrap();
             console.log(result);
             dispatch(setCredentials(result));
-            navigate('/dashboard');
+            navigate('/boards');
         } catch (err) {
             console.error('Failed to login:', err);
         }
