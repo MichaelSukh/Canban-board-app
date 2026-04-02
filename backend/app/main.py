@@ -26,6 +26,7 @@ app.add_middleware(
 )
 
 os.makedirs(os.path.join(STATIC_DIR, "images"), exist_ok=True)
+os.makedirs(os.path.join(STATIC_DIR, "user_icons"), exist_ok=True)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.exception_handler(RequestValidationError)
