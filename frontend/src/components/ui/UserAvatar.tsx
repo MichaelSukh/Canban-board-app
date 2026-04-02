@@ -1,0 +1,29 @@
+import React from 'react';
+
+interface UserAvatarProps {
+    userIcon?: string | null;
+    username?: string;
+    className?: string;
+}
+
+export const UserAvatar: React.FC<UserAvatarProps> = ({ 
+    userIcon, 
+    username, 
+    className = "w-16 h-16 text-xl" 
+}) => {
+    if (userIcon) {
+        return (
+            <img
+                src={`http://localhost:8000${userIcon}`}
+                alt="User avatar"
+                className={`rounded-full object-cover ${className}`}
+            />
+        );
+    }
+
+    return (
+        <div className={`rounded-full bg-gray-300 flex items-center justify-center font-bold border-2 border-black ${className}`}>
+            {username?.slice(0, 2).toUpperCase()}
+        </div>
+    );
+};

@@ -1,5 +1,7 @@
 import os
 import shutil
+import glob
+import uuid
 from fastapi import APIRouter, Depends, status, File, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -51,11 +53,21 @@ def upload_avatar(
     user_service = UserService(db)
     
     extension = file.filename.split(".")[-1]
-    
-    filename = f"{current_user.id}.{extension}"
+
+    # Добавляем суффикс с целью избежания кеширования
+    unique_suffix = str(uuid.uuid4())[:8]
+    filename = f"{current_user.id}_{unique_suffix}.{extension}"
     
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     avatars_dir = os.path.join(base_dir, "static", "user_icons")
+    os.makedirs(avatars_dir, exist_ok=True)
+
+    old_avatars = glob.glob(os.path.join(avatars_dir, f"{current_user.id}_*.*"))
+    for old_file in old_avatars:
+        try:
+            os.remove(old_file)
+        except OSError:
+            pass
     
     filepath = os.path.join(avatars_dir, filename)
     

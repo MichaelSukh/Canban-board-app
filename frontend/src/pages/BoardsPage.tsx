@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import { useGetBoardsQuery } from "../features/boards/boardsApi";
+import { useGetMeQuery } from "../features/users/userApi";
 import { BoardCard } from "../components/ui/BoardCard";
 import { AddButton } from "../components/ui/AddButton";
 import { SelectButton } from "../components/ui/SelectButton";
 import { useNavigate } from "react-router-dom";
 import { BoardModal } from "../features/boards/BoardModal";
 import { DeleteBoardModal } from "../features/boards/DeleteBoardModal";
+import { UserProfileModal } from '../features/users/UserProfileModel';
+import { UserAvatar } from '../components/ui/UserAvatar';
 import logoUrl from "../assets/logo.svg";
 
 export const BoardsPage = () => {
@@ -17,9 +20,15 @@ export const BoardsPage = () => {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+    const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
+
     const [selectedBoardId, setSelectedBoardId] = useState<number>(0);
     const [selectedBoardTitle, setSelectedBoardTitle] = useState<string>('');
     const [selectedBoardDescription, setSelectedBoardDescription] = useState<string>('');
+
+    const { data: currentUser } = useGetMeQuery();
+    const userName = currentUser?.username || 'Loading...';
+    const isLongName: boolean = userName.length > 20;
 
     const navigate = useNavigate();
 
@@ -38,14 +47,24 @@ export const BoardsPage = () => {
                 </div>
 
                 <div className="flex items-center justify-between gap-6">
-                    <div className="flex items-center justify-between gap-10">
-                        <div className="w-10 h-10 bg-gray-300 rounded-full border-2 border-white"></div>
-                        <span className="w-30 text-white text-lg font-bold">User Name</span>
+                    <div className="flex items-center justify-between gap-6">
+                        <div className="flex items-center justify-center w-[56px] h-[56px] bg-gray-300 rounded-full border-[3px] border-white">
+                            <UserAvatar userIcon={currentUser?.user_icon} username={currentUser?.username} className="w-[50px] h-[50px] text-lg" />
+                        </div>
+                        <button onClick={() => setIsUserProfileOpen(true)}
+                            className="flex items-center justify-center h-[42px]
+                                        border-2 border-white
+                                        transition-all duration-400 
+                                        hover:shadow-[4px_4px_0px_0px_rgba(170,170,170,0.8)]">
+                            <span className="w-full max-w-[200px] text-white font-bold m-2 text-md">
+                                {isLongName ? userName.slice(0, 18) + '...' : userName}
+                            </span>
+                        </button>
                     </div>
 
                     <SelectButton
                         onClick={handleLogout}
-                        className="!bg-[#e8e4d9] !text-black !border-black min-w-[100px] hover:!bg-[#d4d0c5] !shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                        className="!h-[42px] !bg-[#e8e4d9] !text-black !border-none !shadow-none hover:!shadow-[4px_4px_0px_0px_rgba(170,170,170,0.8)]"
                     >
                         Exit
                     </SelectButton>
@@ -103,6 +122,10 @@ export const BoardsPage = () => {
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 id={selectedBoardId}
+            />
+            <UserProfileModal
+                isOpen={isUserProfileOpen}
+                onClose={() => setIsUserProfileOpen(false)}
             />
         </div>
     );
