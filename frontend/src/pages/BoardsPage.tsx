@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import { useGetBoardsQuery } from "../features/boards/boardsApi";
@@ -31,6 +31,25 @@ export const BoardsPage = () => {
     const isLongName: boolean = userName.length > 20;
 
     const navigate = useNavigate();
+
+    let errorMessage = "Unknown error";
+    let is404Error = false;
+
+    if (error) {
+        const err: any = error;
+        errorMessage = err.data?.detail || err.data?.message;
+
+        if (err.status === 404) {
+            is404Error = true;
+        }
+    }
+
+    // Выводим все ошибки кроме 404 в консоль
+    useEffect(() => {
+        if (error && !is404Error) {
+            console.error("Fetch Boards Error:", errorMessage);
+        }
+    }, [error, errorMessage, is404Error]);
 
     const handleLogout = () => {
         dispatch(logout());
@@ -72,12 +91,19 @@ export const BoardsPage = () => {
             </header>
 
             {/* Main Content */}
-            <main className="p-8">
+            <main className="p-8 relative">
                 {isLoading && <div className="text-xl font-bold">Loading boards...</div>}
-                {error && <div className="text-xl font-bold text-red-500">Error loading boards</div>}
+
+                {is404Error && (
+                    <div className="w-full text-center mb-8">
+                        <span className="text-2xl font-bold text-[#e8e4d9] bg-[#2a2a2a] px-6 py-2 rounded-lg">
+                            You haven`t board yet
+                        </span>
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {data?.boards.map((board) => (
+                    {!is404Error && data?.boards.map((board) => (
                         <BoardCard
                             key={board.id}
                             title={board.title}
