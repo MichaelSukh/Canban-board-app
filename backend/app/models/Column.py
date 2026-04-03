@@ -7,7 +7,6 @@ class Column(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False, index=True)
-    description = Column(String, nullable=True)
     
     board_id = Column(Integer, ForeignKey("boards.id"), nullable=False)
     board = relationship("Board", back_populates="columns")
