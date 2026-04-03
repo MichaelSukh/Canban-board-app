@@ -13,3 +13,7 @@ class Board(Base):
     owner = relationship("User", back_populates="boards")
 
     columns = relationship("Column", back_populates="board", cascade="all, delete-orphan")
+
+    @property
+    def columns_count(self) -> int:
+        return len(self.columns)

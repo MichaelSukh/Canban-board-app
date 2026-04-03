@@ -15,6 +15,8 @@ class BoardUpdate(BaseModel):
 class BoardResponse(BoardBase):
     id: int = Field(..., description="Board id")
     owner_id: int = Field(..., description="Board owner id")
+    columns_count: int = Field(0, description="Columns count")
+    
     class Config:
         from_attributes = True
 

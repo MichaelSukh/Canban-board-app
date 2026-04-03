@@ -108,8 +108,8 @@ export const BoardsPage = () => {
                             key={board.id}
                             title={board.title}
                             description={board.description || ""}
-                            columnsCount={0}
-                            onSelect={() => console.log('Selected:', board.id)}
+                            columnsCount={board.columns_count}
+                            onSelect={() => navigate(`/board/${board.id}`)}
                             onSettings={() => {
                                 setSelectedBoardId(board.id);
                                 setSelectedBoardTitle(board.title);
