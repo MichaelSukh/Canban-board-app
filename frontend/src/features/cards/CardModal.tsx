@@ -1,0 +1,152 @@
+import React, { useState, useEffect } from "react";
+import { useCreateCardMutation, useUpdateCardMutation } from "./cardsApi";
+import { Input } from "../../components/ui/Input";
+import { SelectButton } from "../../components/ui/SelectButton";
+
+interface CardModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    mode: "create" | "update";
+    columnId: number;
+    cardId?: number;
+    initialData?: {
+        title: string;
+        description: string;
+        priority: number;
+        time_limit: string;
+    };
+}
+
+export const CardModal = ({
+    isOpen,
+    onClose,
+    mode,
+    columnId,
+    cardId,
+    initialData
+}: CardModalProps) => {
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [priority, setPriority] = useState<number>(0);
+    const [timeLimit, setTimeLimit] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const [createCard, { isLoading: isCreating }] = useCreateCardMutation();
+    const [updateCard, { isLoading: isUpdating }] = useUpdateCardMutation();
+    const isLoading = isCreating || isUpdating;
+
+    useEffect(() => {
+        if (isOpen) {
+            setTitle(initialData?.title || "");
+            setDescription(initialData?.description || "");
+            setPriority(initialData?.priority || 0);
+            setTimeLimit(initialData?.time_limit || "");
+            setErrorMsg("");
+        }
+    }, [isOpen, initialData]);
+
+    if (!isOpen) return null;
+
+    const handleSubmit = async (e: React.SubmitEvent) => {
+        e.preventDefault();
+        setErrorMsg("");
+
+        try {
+            if (mode === "create") {
+                await createCard({
+                    column_id: columnId,
+                    title,
+                    description,
+                    priority,
+                    time_limit: timeLimit || undefined
+                }).unwrap();
+            } else {
+                if (!cardId) throw new Error("Card ID required for update");
+                await updateCard({
+                    id: cardId,
+                    title,
+                    description,
+                    priority,
+                    time_limit: timeLimit || undefined
+                }).unwrap();
+            }
+            onClose();
+        } catch (err: any) {
+            setErrorMsg(err.data?.detail || err.data?.message || err.error || "Failed to save card");
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex flex-col items-center justify-center z-50 p-4 font-mono">
+            <div className="bg-[#e8e4d9] border-[3px] border-black w-full max-w-md shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                <div className="bg-[#2a2a2a] p-4 border-b-[3px] border-black">
+                    <h2 className="text-2xl font-bold text-white uppercase tracking-wide">
+                        {mode === "create" ? "Create Card" : "Update Card"}
+                    </h2>
+                </div>
+                <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
+                    <Input
+                        label="Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="e.g. Design UI"
+                        required
+                    />
+
+                    <div className="flex flex-col gap-1">
+                        <label className="font-bold text-lg">Description</label>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Add more details..."
+                            className="p-3 border-[3px] border-black text-lg focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow min-h-[120px] resize-none"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <label className="font-bold text-lg">Priority</label>
+                        <select
+                            value={priority}
+                            onChange={(e) => setPriority(Number(e.target.value))}
+                            className="p-3 border-[3px] border-black text-lg focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow font-bold bg-white cursor-pointer"
+                        >
+                            <option value="0">No tag</option>
+                            <option value="1" className="text-red-600">High</option>
+                            <option value="2" className="text-orange-500">Medium</option>
+                            <option value="3" className="text-green-600">Low</option>
+                        </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <label className="font-bold text-lg">Deadline</label>
+                        <input
+                            type="date"
+                            min={today}
+                            value={timeLimit}
+                            onChange={(e) => setTimeLimit(e.target.value)}
+                            className="p-3 border-[3px] border-black text-lg focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow font-bold bg-white"
+                        />
+                    </div>
+
+                    {errorMsg && <p className="text-red-600 font-bold max-w-[300px] break-words">{errorMsg}</p>}
+
+                    <div className="mt-4 flex justify-between gap-4">
+                        <SelectButton type="submit" disabled={isLoading}>
+                            {isLoading ? "Saving..." : "Save"}
+                        </SelectButton>
+                        <SelectButton
+                            type="button"
+                            onClick={onClose}
+                            disabled={isLoading}
+                            className="bg-[#e8e4d9] !text-black hover:bg-[#d4d0c5] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]"
+                        >
+                            Cancel
+                        </SelectButton>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
