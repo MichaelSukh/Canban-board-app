@@ -7,6 +7,7 @@ interface ColumnProps {
     onAddCard?: () => void;
     onSettings?: () => void;
     onDelete?: () => void;
+    children?: React.ReactNode;
 }
 
 export const Column = ({
@@ -14,7 +15,8 @@ export const Column = ({
     cardsCount = 0,
     onAddCard,
     onSettings,
-    onDelete
+    onDelete,
+    children
 }: ColumnProps) => {
     return (
         <div className="flex flex-col w-full max-w-sm 
@@ -36,8 +38,9 @@ export const Column = ({
                 <p className="text-gray-400 text-sm">{cardsCount} card{cardsCount !== 1 ? 's' : ''}</p>
             </div>
 
-            <div className="bg-[#e8e4d9] p-4 flex flex-col flex-grow min-h-[140px]">
-                <div className="mt-auto">
+            <div className="bg-[#e8e4d9] p-4 flex flex-col flex-grow min-h-[140px] gap-4">
+                {children}
+                <div className="mt-auto pt-4">
                     <AddButton onClick={onAddCard}>
                         Add Card
                     </AddButton>
