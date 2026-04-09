@@ -31,6 +31,11 @@ export interface CardUpdate {
     column_id?: number;
 }
 
+export interface CardImageResponse {
+    id: number;
+    image_url: string;
+}
+
 export const cardsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getCards: builder.query<CardListResponse, number>({
@@ -59,7 +64,30 @@ export const cardsApi = baseApi.injectEndpoints({
                 method: "DELETE"
             }),
             invalidatesTags: ["Card"] as any
-        })
+        }),
+        getCardImages: builder.query<CardImageResponse[], number>({
+            query: (cardId) => `/cards/${cardId}/images/get`,
+            providesTags: (_result, _error, cardId) => [{ type: "CardImage", id: cardId }] as any
+        }),
+        uploadCardImage: builder.mutation<CardImageResponse, { card_id: number; file: File }>({
+            query: ({ card_id, file }) => {
+                const formData = new FormData();
+                formData.append("file", file);
+                return {
+                    url: `/cards/${card_id}/images/upload`,
+                    method: "POST",
+                    body: formData,
+                };
+            },
+            invalidatesTags: (_result, _error, { card_id }) => [{ type: "CardImage", id: card_id }] as any
+        }),
+        deleteCardImage: builder.mutation<CardImageResponse, { card_image_id: number; card_id: number }>({
+            query: ({ card_image_id }) => ({
+                url: `/cards/images/delete/${card_image_id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: (_result, _error, { card_id }) => [{ type: "CardImage", id: card_id }] as any
+        }),
     })
 });
 
@@ -67,5 +95,8 @@ export const {
     useGetCardsQuery, 
     useCreateCardMutation, 
     useUpdateCardMutation, 
-    useDeleteCardMutation 
+    useDeleteCardMutation,
+    useGetCardImagesQuery,
+    useUploadCardImageMutation,
+    useDeleteCardImageMutation
 } = cardsApi;

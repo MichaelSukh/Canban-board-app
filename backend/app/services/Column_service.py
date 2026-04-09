@@ -20,10 +20,10 @@ class ColumnService:
         
         db_columns = self.column_repository.get_columns_by_board_id(board_id)
         
-        columns_list = [ColumnResponse.model_validate(db_column) for db_column in db_columns]
-
-        if not columns_list:
+        if not db_columns:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Columns not found")
+            
+        columns_list = [ColumnResponse.model_validate(db_column) for db_column in db_columns]
         return ColumnListResponse(columns=columns_list, total_columns=len(columns_list))
     
 

@@ -5,6 +5,7 @@ export interface Board {
     title: string;
     description?: string;
     owner_id: number;
+    columns_count?: number;
 }
 
 export interface BoardListResponse {
