@@ -33,12 +33,16 @@ export const ColumnBlock = ({ column, onEditColumn, onDeleteColumn }: ColumnBloc
                 onAddCard={() => setIsCreateCardOpen(true)}
                 onSettings={() => onEditColumn?.(column.id, column.title)}
                 onDelete={() => onDeleteColumn?.(column.id)}
+                onDropCard={(cardId) => {
+                    updateCard({ id: cardId, column_id: column.id });
+                }}
             >
                 {isLoading && <div className="text-sm font-bold text-gray-500 text-center">Loading cards...</div>}
 
-                {!isLoading && !is404Error && data?.cards.map(card => (
+                {!isLoading && !is404Error && [...(data?.cards || [])].sort((a,b) => a.id - b.id).map(card => (
                     <CardUI
                         key={card.id}
+                        id={card.id}
                         title={card.title}
                         description={card.description}
                         date={card.time_limit}

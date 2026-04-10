@@ -2,6 +2,7 @@ import { Trash } from "lucide-react";
 import { useState } from "react";
 
 interface CardProps {
+    id?: number;
     title: string;
     description?: string;
     date?: string;
@@ -12,6 +13,7 @@ interface CardProps {
 }
 
 export const Card = ({
+    id,
     title,
     description = "",
     date = "MM:dd",
@@ -29,11 +31,22 @@ export const Card = ({
 
 
     const isLongDescrition = description.length > 30;
+
+    const handleDragStart = (e: React.DragEvent) => {
+        if (id !== undefined) {
+            e.dataTransfer.setData("cardId", id.toString());
+        }
+    };
+
     return (
-        <div className="flex flex-col w-full max-w-sm 
+        <div 
+            draggable={id !== undefined}
+            onDragStart={handleDragStart}
+            className={`flex flex-col w-full max-w-sm 
                 bg-white border-[2px] border-black p-3
                 font-mono shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] 
-                hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)] transition-shadow duration-300">
+                transition-shadow duration-300
+                ${id !== undefined ? "cursor-grab active:cursor-grabbing hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)]" : ""}`}>
 
             <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center gap-3">
