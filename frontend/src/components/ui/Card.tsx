@@ -30,7 +30,7 @@ export const Card = ({
                 selectedTag === 3 ? "text-green-600" : "text-black";
 
 
-    const isLongDescrition = description.length > 30;
+    const isLongDescrition = description.length > 36;
 
     const handleDragStart = (e: React.DragEvent) => {
         if (id !== undefined) {
@@ -79,7 +79,7 @@ export const Card = ({
                 className="flex flex-col gap-1 hover:bg-gray-100 p-1.5 -mx-1.5 rounded transition-colors"
             >
                 <div className="flex justify-between items-center gap-2">
-                    <h3 className="text-lg font-bold tracking-wide leading-tight break-words">{title}</h3>
+                    <h3 className="w-full max-w-[180px] text-lg font-bold tracking-wide leading-tight break-words">{title}</h3>
 
                     <div onClick={(e) => e.stopPropagation()}>
                         <select
@@ -99,7 +99,7 @@ export const Card = ({
                     </div>
                 </div>
 
-                {description && <p className="text-gray-700 text-xs mt-1">{isLongDescrition ? description.slice(0, 40) + '...' : description}</p>}
+                {description && <p className="text-gray-700 text-xs mt-1">{isLongDescrition ? description.slice(0, 36) + '...' : description}</p>}
             </div>
         </div>
     );

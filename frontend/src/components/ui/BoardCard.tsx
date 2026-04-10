@@ -25,7 +25,7 @@ export const BoardCard = ({
                 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] transition-shadow duration-300`}>
             <div className="bg-[#2d2d2d] p-4 text-white border-b-[3px] border-black">
                 <div className="flex justify-between items-center">
-                    <h3 className="text-2xl font-bold mb-1 tracking-wide">{title}</h3>
+                    <h3 className="w-full max-w-[270px] text-2xl font-bold mb-1 tracking-wide break-words">{title}</h3>
                     <div className='flex gap-2'>
                         <button onClick={onSettings} className="hover:text-gray-400 transition-colors">
                             <Settings size={20} strokeWidth={2.5} />
