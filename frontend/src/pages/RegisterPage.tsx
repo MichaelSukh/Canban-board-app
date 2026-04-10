@@ -1,14 +1,20 @@
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { Input } from '../components/ui/Input';
 import { SelectButton } from '../components/ui/SelectButton';
-import { useRegisterMutation } from '../features/auth/authApi';
+import { useRegisterMutation, useLoginMutation } from '../features/auth/authApi';
+import { setCredentials } from '../features/auth/authSlice';
 import { UserPlus } from 'lucide-react';
+import { useAppDispatch } from '../hooks/redux';
 
 export const RegisterPage = () => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const [registerUser, { isLoading }] = useRegisterMutation();
+    const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+    const [emailError, setEmailError] = useState('');
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         defaultValues: {
@@ -29,8 +35,16 @@ export const RegisterPage = () => {
             const result = await registerUser(registerData).unwrap();
             console.log(result);
 
-            navigate('/login');
-        } catch (err) {
+
+            const formData = new URLSearchParams();
+            formData.append('username', data.email);
+            formData.append('password', data.password);
+
+            const creditials = await login(formData).unwrap();
+            dispatch(setCredentials(creditials));
+            navigate('/boards');
+        } catch (err: any) {
+            setEmailError(err?.data?.detail || 'Unknown error');
             console.error('Failed to register:', err);
         }
     };
@@ -62,7 +76,7 @@ export const RegisterPage = () => {
                     label="Email"
                     type="email"
                     placeholder="example@gmail.com"
-                    error={errors.email?.message}
+                    error={emailError || errors.email?.message}
                     {...register('email', {
                         required: 'Email is required',
                         pattern: {
@@ -95,7 +109,7 @@ export const RegisterPage = () => {
                     })}
                 />
 
-                <SelectButton type="submit" isLoading={isLoading} className="mt-4">
+                <SelectButton type="submit" isLoading={isLoading && isLoginLoading} className="mt-4">
                     SIGN UP
                 </SelectButton>
             </form>

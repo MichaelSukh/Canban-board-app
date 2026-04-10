@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { Input } from '../components/ui/Input';
@@ -12,6 +13,7 @@ export const LoginPage = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [login, { isLoading }] = useLoginMutation();
+    const [authError, setAuthError] = useState('');
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -30,7 +32,8 @@ export const LoginPage = () => {
             console.log(result);
             dispatch(setCredentials(result));
             navigate('/boards');
-        } catch (err) {
+        } catch (err: any) {
+            setAuthError(err?.data?.detail || 'Unknown error');
             console.error('Failed to login:', err);
         }
     };
@@ -50,7 +53,7 @@ export const LoginPage = () => {
                     label="Email"
                     type="email"
                     placeholder="example@gmail.com"
-                    error={errors.email?.message}
+                    error={authError || errors.email?.message}
                     {...register('email', {
                         required: 'Email is required',
                         pattern: {
@@ -64,7 +67,7 @@ export const LoginPage = () => {
                     label="Password"
                     type="password"
                     placeholder="****************"
-                    error={errors.password?.message}
+                    error={authError || errors.password?.message}
                     {...register('password', {
                         required: 'Password is required',
                         minLength: { value: 6, message: 'Min length is 6 characters' },
