@@ -103,7 +103,7 @@ export const BoardsPage = () => {
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {!is404Error && data?.boards.map((board) => (
+                    {!is404Error && [...(data?.boards || [])].sort((a, b) => a.id - b.id).map((board) => (
                         <BoardCard
                             key={board.id}
                             title={board.title}

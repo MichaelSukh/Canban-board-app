@@ -33,7 +33,7 @@ export const columnsApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: columnData
             }),
-            invalidatesTags: ["Column"] as any
+            invalidatesTags: ["Column", "Board"] as any
         }),
         updateColumn: builder.mutation<Column, ColumnUpdate>({
             query: ({ id, ...columnData }) => ({
@@ -48,7 +48,7 @@ export const columnsApi = baseApi.injectEndpoints({
                 url: `/columns/delete/${columnId}`,
                 method: "DELETE"
             }),
-            invalidatesTags: ["Column"] as any
+            invalidatesTags: ["Column", "Board"] as any
         }),
     })
 });

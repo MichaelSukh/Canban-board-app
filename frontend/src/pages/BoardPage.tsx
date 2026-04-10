@@ -27,7 +27,7 @@ export const BoardPage = () => {
     const [selectedColumnId, setSelectedColumnId] = useState<number>(0);
     const [selectedColumnTitle, setSelectedColumnTitle] = useState<string>('');
 
-    const userName = currentUser?.username || 'Loading...';
+    const userName = currentUser?.username || "Loading...";
     const isLongName = userName.length > 20;
 
     const { boardId } = useParams();
@@ -116,7 +116,7 @@ export const BoardPage = () => {
 
                 <div className={`${isLoading || is404Error ? "flex justify-center flex-1" : "flex gap-8 overflow-x-auto overflow-y-hidden pb-4 items-start flex-1"}`}>
 
-                    {!is404Error && columnsData?.columns.map(column => (
+                    {!is404Error && [...(columnsData?.columns || [])].sort((a, b) => a.id - b.id).map(column => (
                         <div key={column.id} className="shrink-0 w-[350px] max-h-full flex flex-col">
                             <ColumnBlock
                                 column={column}

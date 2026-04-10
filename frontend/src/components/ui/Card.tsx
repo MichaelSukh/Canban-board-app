@@ -39,14 +39,15 @@ export const Card = ({
     };
 
     return (
-        <div 
+        <div
             draggable={id !== undefined}
             onDragStart={handleDragStart}
+            onClick={onSelect}
             className={`flex flex-col w-full max-w-sm 
                 bg-white border-[2px] border-black p-3
                 font-mono shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] 
                 transition-shadow duration-300
-                ${id !== undefined ? "cursor-grab active:cursor-grabbing hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)]" : ""}`}>
+                ${id !== undefined ? "cursor-pointer active:cursor-grabbing hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)]" : ""}`}>
 
             <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center gap-3">
@@ -75,8 +76,7 @@ export const Card = ({
             </div>
 
             <div
-                className="flex flex-col gap-1 cursor-pointer hover:bg-gray-100 p-1.5 -mx-1.5 rounded transition-colors"
-                onClick={onSelect}
+                className="flex flex-col gap-1 hover:bg-gray-100 p-1.5 -mx-1.5 rounded transition-colors"
             >
                 <div className="flex justify-between items-center gap-2">
                     <h3 className="text-lg font-bold tracking-wide leading-tight break-words">{title}</h3>
