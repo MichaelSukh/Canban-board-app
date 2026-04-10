@@ -8,6 +8,7 @@ import {
 } from "./cardsApi";
 import { Input } from "../../components/ui/Input";
 import { SelectButton } from "../../components/ui/SelectButton";
+import { ImageModal } from "../../components/ui/ImageModal";
 import { Trash } from "lucide-react";
 
 interface CardModalProps {
@@ -37,6 +38,7 @@ export const CardModal = ({
     const [priority, setPriority] = useState<number>(0);
     const [timeLimit, setTimeLimit] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const today = new Date().toISOString().split("T")[0];
 
@@ -56,6 +58,7 @@ export const CardModal = ({
             setPriority(initialData?.priority || 0);
             setTimeLimit(initialData?.time_limit || "");
             setErrorMsg("");
+            setSelectedImage(null);
         }
     }, [isOpen, initialData]);
 
@@ -206,7 +209,12 @@ export const CardModal = ({
                             )}
                             {images?.map((img: any) => (
                                 <div key={img.id} className="relative group border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white p-1">
-                                    <img src={`http://localhost:8000${img.image_url}`} alt="Attached" className="w-full h-auto object-cover max-h-[300px]" />
+                                    <img 
+                                        src={`http://localhost:8000${img.image_url}`} 
+                                        alt="Attached" 
+                                        className="w-full h-auto object-cover max-h-[300px] cursor-zoom-in" 
+                                        onClick={() => setSelectedImage(`http://localhost:8000${img.image_url}`)}
+                                    />
                                     <button
                                         type="button"
                                         onClick={() => deleteImage({ card_image_id: img.id, card_id: cardId })}
@@ -220,6 +228,13 @@ export const CardModal = ({
                     </aside>
                 )}
             </div>
+
+            {selectedImage && (
+                <ImageModal 
+                    imageUrl={selectedImage} 
+                    onClose={() => setSelectedImage(null)} 
+                />
+            )}
         </div>
     );
 };
