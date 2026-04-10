@@ -45,7 +45,7 @@ export const BoardPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white font-mono">
+        <div className="h-screen w-full bg-white font-mono flex flex-col overflow-hidden">
             {/* Header */}
             <header className="bg-[#2a2a2a] px-10 py-4 flex items-center justify-between border-b-[4px] border-black">
                 <div className="flex items-center gap-4">
@@ -79,8 +79,8 @@ export const BoardPage = () => {
             </header>
 
             {/* Main Content */}
-            <main className="p-8">
-                <div className="w-full flex justify-left mb-8 font-mono">
+            <main className="p-4 flex flex-col flex-1 overflow-hidden">
+                <div className="w-full flex justify-left mb-4 font-mono shrink-0">
                     <div className="flex bg-[#2a2a2a] text-[#e8e4d9] rounded-lg overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                         <button
                             onClick={() => navigate('/boards')}
@@ -114,25 +114,26 @@ export const BoardPage = () => {
                     </div>
                 )}
 
-                <div className={`${isLoading || is404Error ? "flex justify-center" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"}`}>
+                <div className={`${isLoading || is404Error ? "flex justify-center flex-1" : "flex gap-8 overflow-x-auto overflow-y-hidden pb-4 items-start flex-1"}`}>
 
                     {!is404Error && columnsData?.columns.map(column => (
-                        <ColumnBlock
-                            key={column.id}
-                            column={column}
-                            onEditColumn={(id, title) => {
-                                setSelectedColumnId(id);
-                                setSelectedColumnTitle(title);
-                                setIsUpdateColumnOpen(true);
-                            }}
-                            onDeleteColumn={(id) => {
-                                setSelectedColumnId(id);
-                                setIsDeleteColumnOpen(true);
-                            }}
-                        />
+                        <div key={column.id} className="shrink-0 w-[350px] max-h-full flex flex-col">
+                            <ColumnBlock
+                                column={column}
+                                onEditColumn={(id, title) => {
+                                    setSelectedColumnId(id);
+                                    setSelectedColumnTitle(title);
+                                    setIsUpdateColumnOpen(true);
+                                }}
+                                onDeleteColumn={(id) => {
+                                    setSelectedColumnId(id);
+                                    setIsDeleteColumnOpen(true);
+                                }}
+                            />
+                        </div>
                     ))}
 
-                    <div className="w-full max-w-[350px] h-[100px]">
+                    <div className="shrink-0 w-[350px] h-[100px]">
                         <AddButton onClick={() => setIsCreateColumnOpen(true)} className="h-full w-full text-xl">
                             + Add column
                         </AddButton>
