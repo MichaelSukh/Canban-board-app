@@ -41,15 +41,6 @@ export const UserProfileModal = ({ isOpen, onClose }: UserProfileModalProps) => 
         e.preventDefault();
         setErrorMsg('');
 
-        if (username && (username.length < 3 || username.length > 50)) {
-            setErrorMsg('Username must be between 3 and 50 characters');
-            return;
-        }
-
-        if (password && password.length < 8) {
-            setErrorMsg('Password must be at least 8 characters long');
-            return;
-        }
 
         const payload: any = { username };
 
@@ -65,7 +56,7 @@ export const UserProfileModal = ({ isOpen, onClose }: UserProfileModalProps) => 
             setErrorMsg('');
             onClose();
         } catch (err: any) {
-            setErrorMsg(err.data?.detail || 'Failed to update user');
+            setErrorMsg(err.data?.details[0].message || err.data?.detail || 'Failed to update user');
         }
 
 

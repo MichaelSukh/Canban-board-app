@@ -104,7 +104,7 @@ export const CardModal = ({
             }
             onClose();
         } catch (err: any) {
-            setErrorMsg(err.data?.detail || err.data?.message || err.error || "Failed to save card");
+            setErrorMsg(err.data?.details[0].field + err.data?.details[0].message.slice(6, -1) || "Failed to save card");
         }
     };
 
@@ -121,6 +121,7 @@ export const CardModal = ({
                     <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
                         <Input
                             label="Title"
+                            error={errorMsg}
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="example: Design UI"
@@ -162,7 +163,6 @@ export const CardModal = ({
                             />
                         </div>
 
-                        {errorMsg && <p className="text-red-600 font-bold max-w-[300px] break-words">{errorMsg}</p>}
 
                         <div className="mt-4 flex justify-between gap-4">
                             <SelectButton type="submit" disabled={isLoading}>
@@ -181,7 +181,7 @@ export const CardModal = ({
                 </div>
 
                 {mode === "update" && cardId && (
-                    <aside className="w-full md:w-[350px] bg-white flex flex-col min-h-[400px] max-h-[80vh] overflow-hidden border-t-[3px] md:border-t-0 border-black">
+                    <aside className="w-full md:w-[350px] bg-white flex flex-col min-h-[660px] max-h-[80vh] overflow-hidden border-t-[3px] md:border-t-0 border-black">
                         <div className="bg-[#2a2a2a] p-4 border-b-[3px] border-black flex justify-between items-center shrink-0">
                             <h2 className="text-xl font-bold text-white tracking-wide">
                                 Attachments
@@ -209,10 +209,10 @@ export const CardModal = ({
                             )}
                             {images?.map((img: any) => (
                                 <div key={img.id} className="relative group border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white p-1">
-                                    <img 
-                                        src={`http://localhost:8000${img.image_url}`} 
-                                        alt="Attached" 
-                                        className="w-full h-auto object-cover max-h-[300px] cursor-zoom-in" 
+                                    <img
+                                        src={`http://localhost:8000${img.image_url}`}
+                                        alt="Attached"
+                                        className="w-full h-auto object-cover max-h-[300px] cursor-zoom-in"
                                         onClick={() => setSelectedImage(`http://localhost:8000${img.image_url}`)}
                                     />
                                     <button
@@ -230,9 +230,9 @@ export const CardModal = ({
             </div>
 
             {selectedImage && (
-                <ImageModal 
-                    imageUrl={selectedImage} 
-                    onClose={() => setSelectedImage(null)} 
+                <ImageModal
+                    imageUrl={selectedImage}
+                    onClose={() => setSelectedImage(null)}
                 />
             )}
         </div>

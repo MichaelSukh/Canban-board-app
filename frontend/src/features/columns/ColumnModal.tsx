@@ -50,7 +50,7 @@ export const ColumnModal = ({
             }
             onClose();
         } catch (err: any) {
-            setErrorMsg(err.data?.detail || err.data?.message || err.error || "Something went wrong");
+            setErrorMsg(err.data?.details[0].message || "Something went wrong");
         }
     };
 
@@ -65,12 +65,11 @@ export const ColumnModal = ({
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
                     <Input
                         label="Title"
+                        error={errorMsg}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="example: In Progress"
                     />
-
-                    {errorMsg && <p className="text-red-600 font-bold">{errorMsg}</p>}
 
                     <div className="mt-6 flex justify-between gap-4">
                         <SelectButton type="submit" disabled={isLoading}>

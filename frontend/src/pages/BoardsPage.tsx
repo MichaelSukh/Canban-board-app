@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import { useGetBoardsQuery } from "../features/boards/boardsApi";
@@ -43,13 +43,6 @@ export const BoardsPage = () => {
             is404Error = true;
         }
     }
-
-    // Выводим все ошибки кроме 404 в консоль
-    useEffect(() => {
-        if (error && !is404Error) {
-            console.error("Fetch Boards Error:", errorMessage);
-        }
-    }, [error, errorMessage, is404Error]);
 
     const handleLogout = () => {
         dispatch(logout());

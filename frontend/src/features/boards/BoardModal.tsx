@@ -44,11 +44,6 @@ export const BoardModal = ({
         e.preventDefault();
         setErrorMsg('');
 
-        if (title.length < 4 || title.length > 30) {
-            setErrorMsg('Title must be between 4 and 30 characters');
-            return;
-        }
-
         try {
             if (isUpdate && id !== undefined) {
                 await updateBoard({ id, title, description }).unwrap();
@@ -59,7 +54,7 @@ export const BoardModal = ({
             setDescription('');
             onClose();
         } catch (err: any) {
-            setErrorMsg(err.data?.detail || `Failed to ${mode} board`);
+            setErrorMsg(err.data?.details[0].field + err.data?.details[0].message.slice(6, -1) || `Failed to ${mode} board`);
         }
     };
 
@@ -75,6 +70,7 @@ export const BoardModal = ({
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
                     <Input
                         label="Board Title"
+                        error={errorMsg}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="My Next Project"
@@ -96,8 +92,6 @@ export const BoardModal = ({
                                 resize-none h-24"
                         />
                     </div>
-
-                    {errorMsg && <p className="text-red-600 font-bold font-mono">{errorMsg}</p>}
 
                     <div className="flex gap-4 mt-6">
                         <SelectButton type="submit" isLoading={isLoading}>
