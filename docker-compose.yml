@@ -1,6 +1,6 @@
 version: '3.8'
 
-sevices:
+services:
   db:
     image: postgres:15-alpine
     container_name: kanban_db
@@ -29,6 +29,8 @@ sevices:
       # Переопределение адреса бд для докер-сети
       - DATABASE_URL=postgresql://${POSTGRES_USER:-kanban}:${POSTGRES_PASSWORD:-kanban_password}@db:5432/${POSTGRES_DB:-kanban_db}
       - CORS_ORIGINS=https://${DOMAIN}
+
+    command: sh -c "sleep 5 && alembic upgrade head && python run.py"
     expose:
       - "8080"
     depends_on:
