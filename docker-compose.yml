@@ -1,0 +1,78 @@
+version: '3.8'
+
+sevices:
+  db:
+    image: postgres:15-alpine
+    container_name: kanban_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kanban}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kanban_password}
+      POSTGRES_DB: ${POSTGRES_DB:-kanban_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kanban_backend
+    restart: always
+    volumes:
+      - ./backend:/app
+      - backend_static:/app/static
+    env_file:
+      - ./backend/.env
+    environment:
+      # Переопределение адреса бд для докер-сети
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-kanban}:${POSTGRES_PASSWORD:-kanban_password}@db:5432/${POSTGRES_DB:-kanban_db}
+      - CORS_ORIGINS=https://${DOMAIN}
+    expose:
+      - "8080"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=https://${DOMAIN}
+    container_name: kanban_frontend
+    restart: always
+    expose:
+      - "80"
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    container_name: kanban_nginx
+    volumes:
+      - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - backend_static:/app/backend/static:ro
+      - ./certbot/www:/var/www/certbot:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+    command: /bin/sh -c "envsubst '$$DOMAIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    depends_on:
+      - backend
+      - frontend
+
+  certbot:
+    image: certbot/certbot
+    container_name: kanban_certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  postgres_data:
+  backend_static:
