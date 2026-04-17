@@ -1,4 +1,3 @@
-
 # Останавливаем выполнение при любой ошибке
 set -e
 
@@ -15,12 +14,12 @@ echo -e "${YELLOW} Проверяем наличие Docker...${NC}"
 if ! command -v docker &> /dev/null; then
     echo -e "${YELLOW} Docker не найден. Начинаем автоматическую установку...${NC}"
     echo -e " Это может занять пару минут, пожалуйста, подождите."
-    
+
     # Скачиваем и запускаем официальный скрипт установки Docker
     curl -fsSL https://get.docker.com -o get-docker.sh
     sh get-docker.sh
     rm get-docker.sh # Удаляем установочный файл за собой
-    
+
     echo -e "${GREEN} Docker успешно установлен!${NC}"
 else
     echo -e "${GREEN} Docker уже установлен.${NC}"
@@ -57,7 +56,7 @@ POSTGRES_DB=$DB_NAME
 EOF
 
 # Генерируем SECRET_KEY и формируем /backend/.env
-echo -e "${YELLOW}🔑 Генерируем секретный ключ и настраиваем бэкенд...${NC}"
+echo -e "${YELLOW} Генерируем секретный ключ и настраиваем бэкенд...${NC}"
 
 if command -v openssl >/dev/null 2>&1; then
     GEN_SECRET=$(openssl rand -hex 32)
@@ -83,7 +82,7 @@ if [ ! -d "/etc/letsencrypt/live/$DOMAIN" ]; then
     echo -e "\n${YELLOW} Получаем первый SSL сертификат для ${DOMAIN}...${NC}"
     # Запускаем временный контейнер Certbot, который сам займет 80 порт
     docker run --rm -p 80:80 -v /etc/letsencrypt:/etc/letsencrypt certbot/certbot certonly \
-        --standalone -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos -m $EMAIL
+        --standalone -d $DOMAIN --non-interactive --agree-tos -m $EMAIL
     echo -e "${GREEN} Сертификаты получены!${NC}"
 else
     echo -e "\n${GREEN} SSL сертификаты для ${DOMAIN} уже существуют.${NC}"

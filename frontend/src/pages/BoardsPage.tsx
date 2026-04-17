@@ -32,7 +32,7 @@ export const BoardsPage = () => {
 
     const navigate = useNavigate();
 
-    let errorMessage = "Unknown error";
+    let errorMessage;
     let is404Error = false;
 
     if (error) {
