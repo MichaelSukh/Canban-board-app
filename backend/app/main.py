@@ -6,7 +6,6 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from app.config import settings
 from app.routes import User_routes, Board_routes, Column_routes, Card_routes
-from app.database import init_db
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
@@ -59,6 +58,6 @@ app.include_router(Column_routes.router)
 app.include_router(Card_routes.router)
 
 
-@app.on_event("startup")
-def on_startup():
-    init_db()
+# @app.on_event("startup")
+# def on_startup():
+#     init_db()
