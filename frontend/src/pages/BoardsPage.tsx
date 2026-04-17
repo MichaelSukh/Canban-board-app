@@ -32,13 +32,10 @@ export const BoardsPage = () => {
 
     const navigate = useNavigate();
 
-    let errorMessage;
     let is404Error = false;
 
     if (error) {
         const err: any = error;
-        errorMessage = err.data?.detail || err.data?.message;
-
         if (err.status === 404) {
             is404Error = true;
         }
