@@ -7,6 +7,7 @@ class CardBase(BaseModel):
     description: Optional[str] = Field(None, description="Card description")
     time_limit: Optional[date] = Field(None, description="Card time limit")
     priority: Optional[int] = Field(None, description="Card priority")
+    is_completed: Optional[bool] = Field(None, description="Card is completed")
 
 class CardCreate(CardBase):
     pass
@@ -17,6 +18,7 @@ class CardUpdate(BaseModel):
     time_limit: Optional[date] = Field(None, description="Card time limit")
     priority: Optional[int] = Field(None, description="Card priority")
     column_id: Optional[int] = Field(None, description="Card column id")
+    is_completed: Optional[bool] = Field(None, description="Card is completed")
 
 class CardImageResponce(BaseModel):
     id: int = Field(..., description="Card image id")

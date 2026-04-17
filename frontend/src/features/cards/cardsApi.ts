@@ -7,6 +7,7 @@ export interface Card {
     time_limit?: string;
     priority?: number;
     column_id: number;
+    is_completed?: boolean;
 }
 
 export interface CardListResponse {
@@ -20,6 +21,7 @@ export interface CardCreate {
     description?: string;
     time_limit?: string;
     priority?: number;
+    is_completed?: boolean;
 }
 
 export interface CardUpdate {
@@ -29,6 +31,7 @@ export interface CardUpdate {
     time_limit?: string;
     priority?: number;
     column_id?: number;
+    is_completed?: boolean;
 }
 
 export interface CardImageResponse {

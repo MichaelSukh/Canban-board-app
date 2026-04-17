@@ -49,6 +49,10 @@ export const ColumnBlock = ({ column, onEditColumn, onDeleteColumn }: ColumnBloc
                         description={card.description}
                         date={card.time_limit}
                         tags={card.priority || 0}
+                        is_completed={card.is_completed}
+                        onStatusChange={(newStatus) => {
+                            updateCard({ id: card.id, is_completed: newStatus });
+                        }}
                         onTagChange={(newTag) => {
                             updateCard({ id: card.id, priority: newTag });
                         }}

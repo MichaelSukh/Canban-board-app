@@ -7,9 +7,11 @@ interface CardProps {
     description?: string;
     date?: string;
     tags?: number;
+    is_completed?: boolean;
     onSelect?: () => void;
     onDelete?: () => void;
     onTagChange?: (newTag: number) => void;
+    onStatusChange?: (newStatus: boolean) => void;
 }
 
 export const Card = ({
@@ -18,9 +20,11 @@ export const Card = ({
     description = "",
     date = "MM:dd",
     tags = 0,
+    is_completed = false,
     onSelect,
     onDelete,
-    onTagChange
+    onTagChange,
+    onStatusChange
 }: CardProps) => {
     const [selectedTag, setSelectedTag] = useState(tags);
 
@@ -53,6 +57,8 @@ export const Card = ({
                     <div className="relative flex items-center justify-center">
                         <input
                             type="checkbox"
+                            checked={is_completed}
+                            onChange={(e) => onStatusChange?.(e.target.checked)}
                             name={`card-status-${title}`}
                             className="peer appearance-none 
                                     w-5 h-5 rounded-full border-[2px] border-black bg-red-500

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean
 from app.database import Base
 from sqlalchemy.orm import relationship
 
@@ -10,6 +10,7 @@ class Card(Base):
     description = Column(String, nullable=True)
     time_limit = Column(Date, nullable=True)
     priority = Column(Integer, nullable=True)
+    is_completed = Column(Boolean, default=False)
 
     column_id = Column(Integer, ForeignKey("columns.id"), nullable=False)
     column = relationship("Column", back_populates="cards")
