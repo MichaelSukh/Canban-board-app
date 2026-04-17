@@ -29,7 +29,7 @@ export const ColumnBlock = ({ column, onEditColumn, onDeleteColumn }: ColumnBloc
         <>
             <ColumnUI
                 title={column.title}
-                cardsCount={data?.total_cards || 0}
+                cardsCount={is404Error ? 0 : data?.total_cards}
                 onAddCard={() => setIsCreateCardOpen(true)}
                 onSettings={() => onEditColumn?.(column.id, column.title)}
                 onDelete={() => onDeleteColumn?.(column.id)}
@@ -39,7 +39,9 @@ export const ColumnBlock = ({ column, onEditColumn, onDeleteColumn }: ColumnBloc
             >
                 {isLoading && <div className="text-sm font-bold text-gray-500 text-center">Loading cards...</div>}
 
-                {!isLoading && !is404Error && [...(data?.cards || [])].sort((a,b) => a.id - b.id).map(card => (
+                {is404Error && <div className="mt-4 text-sm font-bold text-gray-500 text-center">No cards yet</div>}
+
+                {!isLoading && !is404Error && [...(data?.cards || [])].sort((a, b) => a.id - b.id).map(card => (
                     <CardUI
                         key={card.id}
                         id={card.id}
