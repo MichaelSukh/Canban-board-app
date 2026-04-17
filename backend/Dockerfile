@@ -16,7 +16,7 @@ RUN mkdir -p static/images static/user_icons
 
 RUN chmod -R 755 static
 
-EXPOSE 8080
+EXPOSE 8000
 
 CMD ["python", "run.py"]
 
