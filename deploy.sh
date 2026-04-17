@@ -40,6 +40,7 @@ fi
 echo -e "\n${YELLOW} Введите данные для конфигурации:${NC}"
 
 read -p "Введите ваш домен (например, example.com): " DOMAIN
+read -p "Введите ваш Email (для Let's Encrypt): " EMAIL
 read -p "Введите имя пользователя БД (например, kanban_user): " DB_USER
 read -p "Введите пароль для БД: " DB_PASSWORD
 read -p "Введите название БД (например, kanban_db): " DB_NAME
