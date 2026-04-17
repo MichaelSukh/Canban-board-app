@@ -1,4 +1,5 @@
 import React from 'react';
+import { BASE_URL } from '../../services/api';
 
 interface UserAvatarProps {
     userIcon?: string | null;
@@ -6,15 +7,15 @@ interface UserAvatarProps {
     className?: string;
 }
 
-export const UserAvatar: React.FC<UserAvatarProps> = ({ 
-    userIcon, 
-    username, 
-    className = "w-16 h-16 text-xl" 
+export const UserAvatar: React.FC<UserAvatarProps> = ({
+    userIcon,
+    username,
+    className = "w-16 h-16 text-xl"
 }) => {
     if (userIcon) {
         return (
             <img
-                src={`http://localhost:8000${userIcon}`}
+                src={`${BASE_URL}${userIcon}`}
                 alt="User avatar"
                 className={`rounded-full object-cover ${className}`}
             />

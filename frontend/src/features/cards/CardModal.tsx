@@ -10,6 +10,7 @@ import { Input } from "../../components/ui/Input";
 import { SelectButton } from "../../components/ui/SelectButton";
 import { ImageModal } from "../../components/ui/ImageModal";
 import { Trash } from "lucide-react";
+import { BASE_URL } from "../../services/api";
 
 interface CardModalProps {
     isOpen: boolean;
@@ -210,10 +211,10 @@ export const CardModal = ({
                             {images?.map((img: any) => (
                                 <div key={img.id} className="relative group border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white p-1">
                                     <img
-                                        src={`http://localhost:8000${img.image_url}`}
+                                        src={`${BASE_URL}${img.image_url}`}
                                         alt="Attached"
                                         className="w-full h-auto object-cover max-h-[300px] cursor-zoom-in"
-                                        onClick={() => setSelectedImage(`http://localhost:8000${img.image_url}`)}
+                                        onClick={() => setSelectedImage(`${BASE_URL}${img.image_url}`)}
                                     />
                                     <button
                                         type="button"

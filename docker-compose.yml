@@ -21,8 +21,7 @@ services:
     container_name: kanban_backend
     restart: always
     volumes:
-      - ./backend:/app
-      - backend_static:/app/static
+      - ./backend/static:/app/static
     env_file:
       - ./backend/.env
     environment:
@@ -55,7 +54,7 @@ services:
     volumes:
       - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
-      - backend_static:/app/backend/static:ro
+      - ./backend/static:/app/backend/static:ro
       - ./certbot/www:/var/www/certbot:ro
     ports:
       - "80:80"
