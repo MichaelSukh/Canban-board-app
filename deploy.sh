@@ -28,8 +28,12 @@ fi
 
 # Проверяем, установился ли плагин Docker Compose
 if ! docker compose version &> /dev/null; then
-    echo -e "${RED} Ошибка: Docker Compose не установлен. Проверьте логи установки.${NC}"
-    exit 1
+    echo -e "${YELLOW} Docker Compose не найден. Устанавливаем плагин...${NC}"
+    if command -v apt-get &> /dev/null; then
+        apt-get update
+        apt-get install -y docker-compose-plugin
+        echo -e "${GREEN} Docker Compose установлен!${NC}"
+    fi
 fi
 
 # Опрос данных для формирования корневого .env
