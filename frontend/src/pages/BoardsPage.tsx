@@ -27,7 +27,7 @@ export const BoardsPage = () => {
     const [selectedBoardDescription, setSelectedBoardDescription] = useState<string>('');
 
     const { data: currentUser } = useGetMeQuery();
-    const userName = currentUser?.username || 'Loading...';
+    const userName = currentUser?.username.split(' ')[0] || 'Loading...';
     const isLongName: boolean = userName.length > 20;
 
     const navigate = useNavigate();

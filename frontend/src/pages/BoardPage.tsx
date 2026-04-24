@@ -64,7 +64,7 @@ export const BoardPage = () => {
                                             transition-all duration-400 
                                             hover:shadow-[4px_4px_0px_0px_rgba(170,170,170,0.8)]">
                             <span className="w-full max-w-[200px] text-white font-bold m-2 text-md">
-                                {isLongName ? userName.slice(0, 18) + '...' : userName}
+                                {isLongName ? userName.split(' ')[0].slice(0, 18) + '...' : userName.split(' ')}
                             </span>
                         </button>
                     </div>

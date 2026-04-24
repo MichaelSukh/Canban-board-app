@@ -15,7 +15,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     if (userIcon) {
         return (
             <img
-                src={`${BASE_URL}${userIcon}`}
+                src={`${BASE_URL}${userIcon.slice(1)}`}
                 alt="User avatar"
                 className={`rounded-full object-cover ${className}`}
             />
